@@ -105,16 +105,27 @@ The neural network architecture consists of:
 - **Batch Normalization:** Improve convergence speed and stability.
 
 Output
+
 Epoch 1/10, Loss: 1.2349, Training Accuracy: 0.8257
+
 Epoch 2/10, Loss: 0.5088, Training Accuracy: 0.8760
+
 Epoch 3/10, Loss: 0.3977, Training Accuracy: 0.8940
+
 Epoch 4/10, Loss: 0.3505, Training Accuracy: 0.9045
+
 Epoch 5/10, Loss: 0.3211, Training Accuracy: 0.9113
+
 Epoch 6/10, Loss: 0.2993, Training Accuracy: 0.9168
+
 Epoch 7/10, Loss: 0.2817, Training Accuracy: 0.9215
+
 Epoch 8/10, Loss: 0.2668, Training Accuracy: 0.9253
+
 Epoch 9/10, Loss: 0.2537, Training Accuracy: 0.9286
+
 Epoch 10/10, Loss: 0.2421, Training Accuracy: 0.9318
+
 Test Accuracy: 0.9325
 
 ![image](https://github.com/user-attachments/assets/5ef969b4-5b2c-4479-8a3b-c0540c97cc73)
