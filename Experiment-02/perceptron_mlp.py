@@ -1,82 +1,51 @@
-# Objective - to implement a multi-layer perceptron (MLP) network with one hidden layer using numpy in Python. Demonstrate that it can learn the XOR Boolean function.
 import numpy as np
 
-class MLP:
-    def __init__(self, input_size, hidden_size, output_size, learning_rate=0.1, epochs=10000):
+def step_function(x):
+    return np.where(x >= 0, 1, 0)
+
+class Perceptron:
+    def __init__(self, input_size, learning_rate=0.1, epochs=10000):
         self.input_size = input_size
-        self.hidden_size = hidden_size
-        self.output_size = output_size
         self.learning_rate = learning_rate
         self.epochs = epochs
+        self.weights = np.random.randn(input_size)
+        self.bias = np.random.randn()
 
-        self.weights_input_hidden = np.random.randn(self.input_size, self.hidden_size)
-        self.bias_hidden = np.zeros((1, self.hidden_size))
+    def forward(self, X):
+        return step_function(np.dot(X, self.weights) + self.bias)
 
-        self.weights_hidden_output = np.random.randn(self.hidden_size, self.output_size)
-        self.bias_output = np.zeros((1, self.output_size))
-
-    def sigmoid(self, x):
-        return 1 / (1 + np.exp(-x))
-
-    def sigmoid_derivative(self, x):
-        return x * (1 - x)
-
-    def forward(self, inputs):
-        self.hidden_input = np.dot(inputs, self.weights_input_hidden) + self.bias_hidden
-        self.hidden_output = self.sigmoid(self.hidden_input)
-
-        self.final_input = np.dot(self.hidden_output, self.weights_hidden_output) + self.bias_output
-        self.final_output = self.sigmoid(self.final_input)
-
-        return self.final_output
-
-    def backward(self, inputs, expected_output, actual_output):
-        output_error = expected_output - actual_output
-        output_delta = output_error * self.sigmoid_derivative(actual_output)
-
-        hidden_error = output_delta.dot(self.weights_hidden_output.T)
-        hidden_delta = hidden_error * self.sigmoid_derivative(self.hidden_output)
-
-        self.weights_hidden_output += self.hidden_output.T.dot(output_delta) * self.learning_rate
-        self.bias_output += np.sum(output_delta, axis=0, keepdims=True) * self.learning_rate
-
-        self.weights_input_hidden += inputs.T.dot(hidden_delta) * self.learning_rate
-        self.bias_hidden += np.sum(hidden_delta, axis=0, keepdims=True) * self.learning_rate
-
-    def train(self, inputs, expected_output):
+    def train(self, X, y):
         for _ in range(self.epochs):
-            actual_output = self.forward(inputs)
-            self.backward(inputs, expected_output, actual_output)
+            for xi, target in zip(X, y):
+                output = self.forward(xi)
+                error = target - output
+                self.weights += self.learning_rate * error * xi
+                self.bias += self.learning_rate * error
 
-    def predict(self, inputs):
-        return self.forward(inputs)
+    def predict(self, X):
+        return self.forward(X)
 
-xor_inputs = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
-xor_labels = np.array([[0], [1], [1], [0]])
+# XOR dataset
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y_hidden1 = np.array([1, 1, 1, 0])
+y_hidden2 = np.array([0, 1, 1, 1])
+y_output = np.array([0, 1, 1, 0])
 
-mlp = MLP(input_size=2, hidden_size=2, output_size=1)
-mlp.train(xor_inputs, xor_labels)
+# Train first hidden neuron
+hidden1 = Perceptron(input_size=2)
+hidden1.train(X, y_hidden1)
 
-print("Testing MLP on XOR function:")
-for inputs in xor_inputs:
-    predicted_output = mlp.predict(inputs)
-    print(f"Input: {inputs}, Predicted Output: {predicted_output.round().astype(int)}")
+# Train second hidden neuron
+hidden2 = Perceptron(input_size=2)
+hidden2.train(X, y_hidden2)
 
-"""
-Explanation of Code - 
+# Combine hidden layer outputs
+hidden_output = np.column_stack((hidden1.predict(X), hidden2.predict(X)))
 
-MLP Class Definition
-- Randomly initializes weights for the input-hidden and hidden-output layers.
-- Uses a sigmoid activation function for non-linearity.
-- Implements forward propagation to compute outputs.
-- Uses backpropagation to update weights and biases.
+# Train output neuron
+output_neuron = Perceptron(input_size=2)
+output_neuron.train(hidden_output, y_output)
 
-Training Process
-- The network is trained for 10,000 epochs using gradient descent.
-- Uses sigmoid derivative to calculate the error gradients and update weights accordingly.
-
-Testing on XOR Dataset
-- After training, the MLP correctly classifies XOR inputs.
-
-"""
-
+# Predictions
+predictions = output_neuron.predict(hidden_output)
+print("Predictions for XOR:", predictions.flatten())
