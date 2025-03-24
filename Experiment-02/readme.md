@@ -56,11 +56,11 @@ An **MLP** is a feedforward neural network with at least one hidden layer, capab
 - Implement **backpropagation** for efficient weight updates.
 
 ## Comments
--Step Function:
+1. Step Function:
 
 Added a clear description of the step function, explaining its role in generating binary outputs.
 
-Perceptron Class:
+2. Perceptron Class:
 
 Provided comments explaining the initialization of weights and bias.
 
@@ -68,13 +68,13 @@ Included details on the forward pass, where the model calculates the weighted su
 
 In the train() method, explained the weight and bias update logic based on the error correction rule.
 
-XOR Dataset and Training:
+3. XOR Dataset and Training:
 
 Added comments clarifying the XOR inputs and the manual decomposition of the XOR function into two hidden neurons.
 
 Explained the combination of hidden layer outputs using np.column_stack().
 
-Predictions:
+4. Predictions:
 
 Added comments indicating that the model generates predictions using the trained network.
 -
